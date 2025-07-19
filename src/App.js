@@ -68,7 +68,7 @@ function App() {
       // Refresh user data to ensure we have the latest EcoPoints
       refreshUserData();
     }
-  }, []); // Remove refreshUserData from dependency to avoid infinite loop
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogin = (userData, userToken) => {
     setUser(userData);

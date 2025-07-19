@@ -12,7 +12,7 @@ const CartModal = ({ isOpen, onClose, user, token, onCheckout }) => {
       setLoading(true);
       fetchCart();
     }
-  }, [isOpen, token]);
+  }, [isOpen, token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchCart = async () => {
     try {

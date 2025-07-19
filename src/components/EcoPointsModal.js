@@ -14,7 +14,7 @@ const EcoPointsModal = ({ isOpen, onClose, user, token, onRefresh }) => {
     if (isOpen && user) {
       fetchEcoPointsData();
     }
-  }, [isOpen, user]);
+  }, [isOpen, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchEcoPointsData = async () => {
     setLoading(true);
