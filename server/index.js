@@ -10,9 +10,9 @@ dotenv.config();
 
 const app = express();
 
-// More explicit CORS configuration
+// CORS configuration for production
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: process.env.NODE_ENV === 'production' ? true : 'http://localhost:3000',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -33,6 +33,7 @@ app.use('/api/cart', cartRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/eco-rewards', ecoRewardsRouter);
 
+// MongoDB connection with fallback
 const mongoUri = process.env.MONGO_URI || 'mongodb+srv://rishitagrawal217:t6ddr0l6cOyXxxml@cluster0.actbcon.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -57,6 +58,15 @@ app.get('/', (req, res) => {
 // Add a test endpoint
 app.get('/test', (req, res) => {
   res.json({ message: 'Backend is working!' });
+});
+
+// Health check endpoint for Vercel
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'EcoKart API is running',
+    timestamp: new Date().toISOString()
+  });
 });
 
 const PORT = process.env.PORT || 5001;
