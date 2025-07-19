@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import config from '../config';
 import './Home.css';
 
 const Home = ({ user }) => {
@@ -16,9 +17,15 @@ const Home = ({ user }) => {
 
   const fetchUserStats = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/orders/my-orders', {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.log('No token available for fetching user stats');
+        return;
+      }
+
+      const response = await fetch(`${config.API_BASE_URL}/api/orders/my-orders`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${token}`,
         },
       });
       
@@ -42,9 +49,21 @@ const Home = ({ user }) => {
           ecoFriendlyChoices,
           planetImpact
         });
+      } else {
+        console.error('Failed to fetch orders:', response.status);
+        // Set default values if API fails
+        setUserStats({
+          ecoFriendlyChoices: 0,
+          planetImpact: 0
+        });
       }
     } catch (error) {
       console.error('Error fetching user stats:', error);
+      // Set default values if there's an error (e.g., backend not running)
+      setUserStats({
+        ecoFriendlyChoices: 0,
+        planetImpact: 0
+      });
     }
   };
 
@@ -123,9 +142,9 @@ const Home = ({ user }) => {
             </div>
             <div className="stat-card">
               <div className="stat-value">🌍 {userStats.planetImpact}</div>
-            
+              <div className="stat-label">Planet Impact</div>
               <div className="impact-description">
-                {userStats.planetImpact} Kilograms of carbon footprints saved
+                {userStats.planetImpact} kilograms of carbon footprints saved
               </div>
             </div>
           </div>
